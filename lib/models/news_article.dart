@@ -38,6 +38,62 @@ class NewsArticle {
     this.relatedArticles,
   });
 
+  /// Parse từ GNews API JSON
+  factory NewsArticle.fromGNewsJson(
+    Map<String, dynamic> json, {
+    required String category,
+    bool isFeatured = false,
+    bool isHot = false,
+    int viewCount = 0,
+    List<NewsArticle>? relatedArticles,
+  }) {
+    final title = (json['title'] ?? '').toString();
+    final description = (json['description'] ?? '').toString();
+    final content = (json['content'] ?? description).toString();
+
+    final imageUrl = (json['image'] ?? '').toString();
+    final url = (json['url'] ?? '').toString();
+    final sourceName = (json['source']?['name'] ?? 'GNews').toString();
+
+    final publishedAt =
+        DateTime.tryParse((json['publishedAt'] ?? '').toString()) ??
+            DateTime.now();
+
+    final id = url.isNotEmpty ? url : title.hashCode.toString();
+
+    final tags = title
+        .split(RegExp(r'\s+'))
+        .where((w) => w.length >= 4)
+        .take(6)
+        .toList();
+
+    int readTime(String text) {
+      final words =
+          text.trim().isEmpty ? 0 : text.trim().split(RegExp(r'\s+')).length;
+      return (words / 200).ceil().clamp(1, 20);
+    }
+
+    return NewsArticle(
+      id: id,
+      title: title,
+      content: content,
+      excerpt: description.isNotEmpty
+          ? description
+          : (content.length > 140 ? content.substring(0, 140) : content),
+      imageUrl: imageUrl,
+      category: category,
+      author: sourceName,
+      authorAvatar: 'https://via.placeholder.com/150',
+      publishedAt: publishedAt,
+      readTimeMinutes: readTime(content),
+      viewCount: viewCount,
+      isFeatured: isFeatured,
+      isHot: isHot,
+      tags: tags,
+      relatedArticles: relatedArticles,
+    );
+  }
+
   // Tính thời gian đã đăng (relative time)
   String get timeAgo {
     final now = DateTime.now();
@@ -109,4 +165,3 @@ class NewsArticle {
     );
   }
 }
-

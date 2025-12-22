@@ -14,6 +14,7 @@ import 'models/news_article.dart';
 import 'services/auth_service.dart';
 import 'services/bookmark_service.dart';
 import 'services/preferences_service.dart';
+import 'providers/news_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthService()),
         ChangeNotifierProvider(create: (_) => BookmarkService()),
         ChangeNotifierProvider(create: (_) => PreferencesService()),
+        ChangeNotifierProvider(create: (_) => NewsProvider()..loadHome()),
       ],
       child: Consumer<PreferencesService>(
         builder: (context, prefs, _) {

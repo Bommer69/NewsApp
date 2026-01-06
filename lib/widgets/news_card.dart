@@ -6,6 +6,7 @@ import '../config/app_constants.dart';
 import '../models/news_article.dart';
 import '../services/bookmark_service.dart';
 import 'glass_container.dart';
+import 'image_placeholder.dart';
 
 /// Card hiển thị bài viết tin tức dạng ngang (horizontal)
 class NewsCard extends StatelessWidget {
@@ -26,27 +27,12 @@ class NewsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Image
-          ClipRRect(
+          NewsImage(
+            imageUrl: article.imageUrl,
+            width: 96,
+            height: 96,
+            fit: BoxFit.cover,
             borderRadius: BorderRadius.circular(12),
-            child: CachedNetworkImage(
-              imageUrl: article.imageUrl,
-              width: 96,
-              height: 96,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Container(
-                color: AppColors.surfaceDark,
-                child: const Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ),
-              errorWidget: (context, url, error) => Container(
-                color: AppColors.surfaceDark,
-                child: const Icon(Icons.image_not_supported, color: AppColors.textMuted),
-              ),
-            ),
           ),
           const SizedBox(width: 12),
           
@@ -189,16 +175,9 @@ class FeaturedNewsCard extends StatelessWidget {
             children: [
               // Background image
               Positioned.fill(
-                child: CachedNetworkImage(
+                child: NewsImage(
                   imageUrl: article.imageUrl,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    color: AppColors.surfaceDark,
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    color: AppColors.surfaceDark,
-                    child: const Icon(Icons.image_not_supported),
-                  ),
                 ),
               ),
               
@@ -342,16 +321,9 @@ class VerticalNewsCard extends StatelessWidget {
               children: [
                 AspectRatio(
                   aspectRatio: 4 / 3,
-                  child: CachedNetworkImage(
+                  child: NewsImage(
                     imageUrl: article.imageUrl,
                     fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      color: AppColors.surfaceDark,
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      color: AppColors.surfaceDark,
-                      child: const Icon(Icons.image_not_supported),
-                    ),
                   ),
                 ),
                 

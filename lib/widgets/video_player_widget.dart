@@ -3,6 +3,7 @@ import 'package:video_player/video_player.dart';
 import '../config/app_colors.dart';
 import '../config/app_constants.dart';
 import 'glass_container.dart';
+import 'image_placeholder.dart';
 
 /// Widget video player với controls
 class VideoPlayerWidget extends StatefulWidget {
@@ -124,30 +125,16 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   Widget _buildThumbnail() {
-    if (widget.thumbnailUrl != null) {
-      return Image.network(
-        widget.thumbnailUrl!,
+    if (widget.thumbnailUrl != null && widget.thumbnailUrl!.isNotEmpty) {
+      return NewsImage(
+        imageUrl: widget.thumbnailUrl!,
         fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            color: AppColors.surfaceDark,
-            child: const Icon(
-              Icons.video_library,
-              size: 48,
-              color: AppColors.textMuted,
-            ),
-          );
-        },
       );
     }
 
-    return Container(
-      color: AppColors.surfaceDark,
-      child: const Icon(
-        Icons.video_library,
-        size: 48,
-        color: AppColors.textMuted,
-      ),
+    return ImagePlaceholder(
+      icon: Icons.video_library,
+      text: 'Video',
     );
   }
 

@@ -10,6 +10,7 @@ import '../../providers/news_provider.dart';
 import '../../services/bookmark_service.dart';
 import '../../widgets/glass_container.dart';
 import '../../widgets/video_player_widget.dart';
+import '../../widgets/image_placeholder.dart';
 
 /// Màn hình chi tiết bài báo
 class DetailScreen extends StatefulWidget {
@@ -73,10 +74,6 @@ class _DetailScreenState extends State<DetailScreen> {
   // ================= HERO IMAGE =================
 
   Widget _buildHeroImage() {
-    final heroUrl = widget.article.imageUrl.isNotEmpty
-        ? widget.article.imageUrl
-        : 'https://via.placeholder.com/1200x800.png?text=No+Image';
-
     return SliverAppBar(
       expandedHeight: 320,
       backgroundColor: Colors.transparent,
@@ -85,15 +82,9 @@ class _DetailScreenState extends State<DetailScreen> {
         background: Stack(
           fit: StackFit.expand,
           children: [
-            CachedNetworkImage(
-              imageUrl: heroUrl,
+            NewsImage(
+              imageUrl: widget.article.imageUrl,
               fit: BoxFit.cover,
-              placeholder: (_, __) =>
-                  Container(color: AppColors.surfaceDark),
-              errorWidget: (_, __, ___) => Container(
-                color: AppColors.surfaceDark,
-                child: const Icon(Icons.image_not_supported),
-              ),
             ),
             Container(
               decoration: BoxDecoration(
@@ -173,8 +164,21 @@ class _DetailScreenState extends State<DetailScreen> {
       children: [
         CircleAvatar(
           backgroundColor: AppColors.surfaceDark,
-          backgroundImage:
-              CachedNetworkImageProvider(widget.article.authorAvatar),
+          radius: 24,
+          backgroundImage: widget.article.authorAvatar.isNotEmpty
+              ? CachedNetworkImageProvider(widget.article.authorAvatar)
+              : null,
+          child: widget.article.authorAvatar.isEmpty
+              ? Text(
+                  widget.article.author.isNotEmpty
+                      ? widget.article.author[0].toUpperCase()
+                      : '?',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              : null,
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -263,15 +267,12 @@ class _DetailScreenState extends State<DetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ClipRRect(
-                        borderRadius:
-                            BorderRadius.circular(AppConstants.radiusLarge),
-                        child: CachedNetworkImage(
-                          imageUrl: a.imageUrl,
-                          height: 120,
-                          width: 200,
-                          fit: BoxFit.cover,
-                        ),
+                      NewsImage(
+                        imageUrl: a.imageUrl,
+                        height: 120,
+                        width: 200,
+                        fit: BoxFit.cover,
+                        borderRadius: BorderRadius.circular(AppConstants.radiusLarge),
                       ),
                       const SizedBox(height: 8),
                       Text(
@@ -303,22 +304,33 @@ class _DetailScreenState extends State<DetailScreen> {
 
   // ================= TOP BAR =================
 
-  Widget _buildTopNavigationBar() {
-    return Positioned(
-      top: 0,
-      left: 0,
-      right: 0,
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: GlassButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Icon(Icons.arrow_back, color: Colors.white),
+ Widget _buildTopNavigationBar() {
+  return Positioned(
+    top: 5,
+    left: 8,
+    child: SafeArea(
+      child: GlassButton(
+        onPressed: () => Navigator.pop(context),
+        child: IconButton(
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(
+            minWidth: 36,
+            minHeight: 36,
           ),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+            size: 18,
+          ),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
+
+
 
   // ================= FLOATING ACTION =================
 

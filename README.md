@@ -36,31 +36,177 @@
 - Smooth animations và transitions
 - Bottom navigation bar với glass effect
 
-##  Cài đặt
+## 🚀 Cài đặt và Chạy Dự Án
 
-### Yêu cầu
+### Yêu cầu hệ thống
+
+**Frontend (Flutter):**
 - Flutter SDK 3.10.1 trở lên
 - Dart SDK 3.10.1 trở lên
+- Android Studio / VS Code với Flutter extension
+- Android SDK hoặc Xcode (cho iOS)
 
-### Các bước cài đặt
+**Backend (Node.js):**
+- Node.js 16.x trở lên
+- npm hoặc yarn
+- MongoDB Atlas account (hoặc MongoDB local)
 
-1. **Clone repository**
-```bash
-git clone <repository-url>
-cd TinTucApp
+### Cấu trúc dự án
+
+```
+app-tintuc/
+├── backend/          # Backend API (Node.js + Express + MongoDB)
+│   ├── server.js
+│   ├── package.json
+│   └── .env
+└── lib/              # Flutter App
+    ├── config/
+    ├── screens/
+    └── ...
 ```
 
-2. **Cài đặt dependencies**
+---
+
+## 📦 Bước 1: Cài đặt Backend
+
+1. **Di chuyển vào thư mục backend:**
+```bash
+cd backend
+```
+
+2. **Cài đặt dependencies:**
+```bash
+npm install
+```
+
+3. **Kiểm tra file `.env`:**
+Đảm bảo file `.env` có nội dung:
+```env
+PORT=3000
+JWT_SECRET=your-secret-key-change-this-in-production
+MONGODB_URI=mongodb+srv://vinhprop2004_db_user:5WYE8nakdPOdDpkB@cluster0.amkwdxh.mongodb.net/tintuc_db?retryWrites=true&w=majority
+```
+
+4. **Chạy backend server:**
+```bash
+# Development mode (với auto-reload)
+npm run dev
+
+# Hoặc Production mode
+npm start
+```
+
+✅ Server sẽ chạy tại: `http://localhost:3000`
+
+**Kiểm tra server hoạt động:**
+Mở browser và truy cập: `http://localhost:3000/api/health`
+
+---
+
+## 📱 Bước 2: Cài đặt và Chạy Flutter App
+
+1. **Quay về thư mục gốc:**
+```bash
+cd ..
+```
+
+2. **Cài đặt Flutter dependencies:**
 ```bash
 flutter pub get
 ```
 
-3. **Chạy ứng dụng**
+3. **Cấu hình API URL:**
+
+Mở file `lib/config/api_config.dart` và cập nhật `baseUrl` tùy theo môi trường:
+
+**Cho Android Emulator:**
+```dart
+static const String baseUrl = 'http://10.0.2.2:3000';
+```
+
+**Cho iOS Simulator:**
+```dart
+static const String baseUrl = 'http://localhost:3000';
+```
+
+**Cho thiết bị thật:**
+1. Tìm IP của máy tính:
+   - Windows: `ipconfig` (tìm IPv4 Address)
+   - Mac/Linux: `ifconfig` hoặc `ip addr`
+2. Cập nhật:
+```dart
+static const String baseUrl = 'http://192.168.1.XXX:3000'; // Thay XXX bằng IP của bạn
+```
+
+**Lưu ý:** Đảm bảo máy tính và thiết bị cùng mạng WiFi.
+
+4. **Chạy Flutter app:**
+```bash
+# Chạy trên thiết bị mặc định
+flutter run
+
+# Hoặc chạy trên thiết bị cụ thể
+flutter run -d chrome          # Web
+flutter run -d windows          # Windows
+flutter run -d <device-id>      # Android/iOS device
+```
+
+---
+
+## 🔄 Quy trình chạy dự án (Development)
+
+### Terminal 1 - Backend:
+```bash
+cd backend
+npm run dev
+```
+
+### Terminal 2 - Frontend:
 ```bash
 flutter run
 ```
 
-##  Dependencies
+**Lưu ý:** Backend phải chạy trước khi test các chức năng đăng ký/đăng nhập trong Flutter app.
+
+---
+
+## ✅ Kiểm tra kết nối
+
+1. **Backend đang chạy:**
+   - Mở `http://localhost:3000/api/health` trên browser
+   - Nếu thấy `{"success": true, "message": "Server đang hoạt động"}` → ✅ Backend OK
+
+2. **Flutter app kết nối được:**
+   - Mở app và thử đăng ký tài khoản mới
+   - Nếu thành công → ✅ Kết nối OK
+   - Nếu lỗi "Connection refused" → Kiểm tra lại `baseUrl` trong `api_config.dart`
+
+---
+
+## 🐛 Troubleshooting
+
+### Lỗi: "Connection refused" trong Flutter
+- ✅ Đảm bảo backend đang chạy (`npm run dev` trong thư mục `backend`)
+- ✅ Kiểm tra `baseUrl` trong `lib/config/api_config.dart` đúng chưa
+- ✅ Nếu dùng thiết bị thật, đảm bảo cùng mạng WiFi với máy tính
+- ✅ Tắt firewall tạm thời để test
+
+### Lỗi: "MongoDB connection failed"
+- ✅ Kiểm tra connection string trong `backend/.env`
+- ✅ Đảm bảo IP của bạn đã được whitelist trong MongoDB Atlas
+- ✅ Kiểm tra network connection
+
+### Lỗi: "npm: command not found"
+- ✅ Cài đặt Node.js từ [nodejs.org](https://nodejs.org/)
+- ✅ Khởi động lại terminal sau khi cài đặt
+
+### Lỗi: "flutter: command not found"
+- ✅ Cài đặt Flutter SDK và thêm vào PATH
+- ✅ Chạy `flutter doctor` để kiểm tra cài đặt
+
+## 📚 Dependencies
+
+### Flutter Dependencies
 
 ```yaml
 dependencies:
@@ -74,7 +220,7 @@ dependencies:
   go_router: ^14.6.2
   
   # Networking
-  http: ^1.2.0
+  http: ^1.2.2
   
   # Image & Media
   cached_network_image: ^3.3.1
@@ -87,6 +233,20 @@ dependencies:
   # Utils
   intl: ^0.19.0
   timeago: ^3.6.1
+  shared_preferences: ^2.2.2  # Lưu token authentication
+```
+
+### Backend Dependencies
+
+```json
+{
+  "express": "^4.18.2",
+  "mongoose": "^8.0.0",
+  "cors": "^2.8.5",
+  "bcryptjs": "^2.4.3",
+  "dotenv": "^16.3.1",
+  "jsonwebtoken": "^9.0.2"
+}
 ```
 
 ## 📁 Cấu trúc dự án
@@ -175,25 +335,29 @@ MainScreen (Bottom Nav)
 - Settings với switches
 - Glass panels
 
+## 🔐 Authentication với MongoDB
+
+Ứng dụng đã tích hợp đầy đủ authentication với MongoDB:
+
+- ✅ **Đăng ký người dùng** - Lưu vào MongoDB với mật khẩu được mã hóa
+- ✅ **Đăng nhập** - Xác thực với MongoDB
+- ✅ **JWT Token** - Lưu token vào SharedPreferences
+- ✅ **Auto-login** - Tự động đăng nhập khi mở app lại
+- ✅ **Session management** - Quản lý session an toàn
+
+Xem chi tiết trong `SETUP_MONGODB.md` và `backend/README.md`
+
 ##  Tính năng nâng cao (TODO)
 
-- [ ] Tích hợp API backend thực tế
 - [ ] Video player thực sự với controls
 - [ ] Voice search functionality
 - [ ] Push notifications
 - [ ] Offline reading mode
-- [ ] Social sharing
-- [ ] User authentication
-- [ ] Bookmark sync
+- [ ] Social sharing (Google, Facebook)
+- [ ] Bookmark sync với MongoDB
 - [ ] Dark/Light theme toggle thực tế
 - [ ] Font size adjustment
-
-## Ghi chú
-
-- Mock data được sử dụng cho demo
-- Video player là placeholder (chưa implement playback)
-- Voice search là placeholder (chưa implement)
-- Không có backend API (sử dụng mock data)
+- [ ] Quên mật khẩu với email
 
 ##  Phát triển
 

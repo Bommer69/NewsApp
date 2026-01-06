@@ -51,7 +51,22 @@ class NewsArticle {
     final description = (json['description'] ?? '').toString();
     final content = (json['content'] ?? description).toString();
 
-    final imageUrl = (json['image'] ?? '').toString();
+    // Validate và clean image URL
+    String imageUrl = (json['image'] ?? '').toString().trim();
+    
+    // Kiểm tra URL hợp lệ
+    if (imageUrl.isNotEmpty) {
+      try {
+        final uri = Uri.parse(imageUrl);
+        // Chỉ chấp nhận http/https URLs
+        if (uri.scheme != 'http' && uri.scheme != 'https') {
+          imageUrl = '';
+        }
+      } catch (e) {
+        // URL không hợp lệ, set về rỗng
+        imageUrl = '';
+      }
+    }
     final url = (json['url'] ?? '').toString();
     final sourceName = (json['source']?['name'] ?? 'GNews').toString();
 

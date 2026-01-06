@@ -10,6 +10,7 @@ import '../../providers/news_provider.dart';
 import '../../services/bookmark_service.dart';
 import '../../widgets/glass_container.dart';
 import '../../widgets/video_player_widget.dart';
+import '../../widgets/image_placeholder.dart';
 
 class DetailScreen extends StatefulWidget {
   final NewsArticle article;
@@ -55,7 +56,7 @@ class _DetailScreenState extends State<DetailScreen> {
             expandedHeight: 300,
             backgroundColor: Colors.transparent,
             flexibleSpace: FlexibleSpaceBar(
-              background: CachedNetworkImage(
+              background: NewsImage(
                 imageUrl: widget.article.imageUrl,
                 fit: BoxFit.cover,
               ),
